@@ -147,6 +147,7 @@ coverage*.json
 coverage*.xml
 coverage*.info
 
+.DS_Store
 # Visual Studio code coverage results
 *.coverage
 *.coveragexml
