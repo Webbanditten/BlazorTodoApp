@@ -39,6 +39,9 @@ jobs:
     - name: Publish
       run: dotnet publish --configuration Release --output publish
 
+    - name: Copy index.html to 404.html 
+      run: cp ./publish/wwwroot/index.html ./publish/wwwroot/404.html
+
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v2
       with:
