@@ -1,0 +1,95 @@
+﻿@page "/todo"
+@using BlazorApp.Components.TodoItem;
+
+<PageTitle>TodoApp</PageTitle>
+<style>
+  .rotate-45 {
+    --transform-rotate: 45deg;
+    transform: rotate(45deg);
+  }
+
+  .group:hover .group-hover\:flex {
+    display: flex;
+  }
+
+  input[type=checkbox]:checked+label span:first-of-type {
+    background-color: #10B981;
+    border-color: #10B981;
+    color: #fff;
+  }
+
+  input[type=checkbox]:checked+label span:nth-of-type(2) {
+    text-decoration: line-through;
+    color: #9CA3AF;
+  }
+</style>
+<h1>Todo app</h1>
+<div class="flex items-center justify-center w-screen h-screen font-medium">
+  <div class="flex flex-grow items-center justify-center h-full text-gray-600">
+    <!-- Component Start -->
+    <div class="max-w-full p-8 bg-white rounded-lg shadow-lg w-96">
+      <div class="flex items-center mb-6">
+        <svg class="h-8 w-8 text-indigo-500 stroke-current" xmlns="http://www.w3.org/2000/svg" fill="none"
+          viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+        </svg>
+        <h4 class="font-semibold ml-3 text-lg">@myTodoList.Title</h4>
+      </div>
+      @{
+        if (myTodoList.Items.Count > 0)
+        {
+          <div class="flex flex-col gap-2">
+            @for (int i = 0; i < myTodoList.Items.Count; i++)
+            {
+              <TodoItem Id="@i" Title="@myTodoList.Items[i].Title" Metadata="@myTodoList.Items[i].Metadata" />
+            }
+          </div>
+        }
+      }
+      <button class="flex items-center w-full h-8 px-2 mt-2 text-sm font-medium rounded">
+        <svg class="w-5 h-5 text-gray-400 fill-current" xmlns="http://www.w3.org/2000/svg" fill="none"
+          viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+        </svg>
+        <input class="flex-grow h-8 ml-4 bg-transparent focus:outline-none font-medium" type="text"
+          placeholder="add a new task">
+      </button>
+    </div>
+    <!-- Component End  -->
+  </div>
+</div>
+
+@code {
+  private class TodoList
+  {
+    public string Title { get; set; } = string.Empty;
+    public List<TodoListItem> Items { get; set; } = new List<TodoListItem>();
+  }
+
+  private class TodoListItem
+  {
+    public string Title { get; set; } = string.Empty;
+    public TodoMetadata Metadata { get; set; } = new TodoMetadata();
+
+    public TodoListItem(string title, TodoMetadata metadata)
+    {
+      Title = title;
+      Metadata = metadata;
+    }
+  }
+
+
+  private TodoList myTodoList = new TodoList()
+    {
+      Title = "Patrick's Todolist",
+      Items = new List<TodoListItem>()
+{
+new TodoListItem("Buy milk", new TodoMetadata() { IsDone = false }),
+new TodoListItem("Buy water", new TodoMetadata() { IsDone = false }),
+new TodoListItem("Milk cow", new TodoMetadata() { IsDone = false }),
+new TodoListItem("Step on LEGO bricks", new TodoMetadata() { CompletedAt = DateTime.Now, IsDone = true }),
+new TodoListItem("Roll in dirt", new TodoMetadata() { IsDone = false }),
+}
+    };
+}

@@ -9,17 +9,16 @@
     var base = document.createElement('base');
     var currentUrl = window.location.href;
     var localHostUrl = 'localhost';
-    if (currentUrl.contains(localHostUrl)) {
+    if (currentUrl.includes(localHostUrl)) {
       base.href = '/';
     } else {
       base.href = '/BlazorTodoApp/';
     }
     document.getElementsByTagName('head')[0].appendChild(base);
   </script>
-  <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.0.2/tailwind.min.css">
   <link rel="stylesheet" href="css/app.css" />
   <link rel="icon" type="image/png" href="favicon.png" />
-  <link href="BlazorApp.styles.css" rel="stylesheet" />
 </head>
 
 <body>
