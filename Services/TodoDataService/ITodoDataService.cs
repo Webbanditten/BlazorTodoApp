@@ -10,5 +10,6 @@ namespace BlazorApp.Services
     Task<TodoListItem> AddTodoItem(TodoListItem todoItem);
     Task<TodoListItem> UpdateTodoItem(TodoListItem todoItem);
     Task DeleteTodoItem(Guid id);
+    Task ClearTodoItems();
   }
 }

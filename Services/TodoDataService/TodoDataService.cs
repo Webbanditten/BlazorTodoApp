@@ -21,6 +21,11 @@ namespace BlazorApp.Services
       return todoItem;
     }
 
+    public async Task ClearTodoItems()
+    {
+      await localStorage.RemoveItemAsync("items");
+    }
+
     public async Task DeleteTodoItem(Guid id)
     {
       var todoListItems = await GetTodoItems();

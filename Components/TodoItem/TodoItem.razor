@@ -3,7 +3,7 @@
 @using BlazorApp.Models;
 @inject BlazorApp.Services.ITodoDataService todoDataService
 
-<div class=" @(deleted ? "hidden" : null)">
+<div class="@(deleted ? "hidden" : null)">
   <div class="flex items-center">
     <input class="hidden" @onchange="ToggleCompletion" checked="@(Metadata.IsDone ? "checked" : null)" type="checkbox"
       id="task_@Id">

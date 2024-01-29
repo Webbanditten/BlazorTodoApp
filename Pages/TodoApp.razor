@@ -9,15 +9,6 @@
 @inject BlazorApp.Services.ITodoDataService todoDataService
 <PageTitle>TodoApp</PageTitle>
 <style>
-  .rotate-45 {
-    --transform-rotate: 45deg;
-    transform: rotate(45deg);
-  }
-
-  .group:hover .group-hover\:flex {
-    display: flex;
-  }
-
   input[type=checkbox]:checked+label span:first-of-type {
     background-color: #10B981;
     border-color: #10B981;
@@ -29,8 +20,8 @@
     color: #9CA3AF;
   }
 </style>
-<div class="flex items-center justify-center w-screen h-screen font-medium">
-  <div class="flex flex-grow items-center justify-center h-full text-gray-600 bg-gray-200">
+<div class="flex items-center justify-center w-screen p-12 font-medium  text-gray-600">
+  <div class="flex flex-grow items-center justify-center h-full">
     <!-- Component Start -->
     <div class="max-w-full p-8 bg-white rounded-lg shadow-lg w-96">
       <div class="flex items-center mb-6">
@@ -48,13 +39,17 @@
           </div>
         }
       }
-      <button class="flex items-center w-full h-8 px-2 mt-2 text-sm font-medium rounded">
-
+      <div class="flex items-center w-full h-8 px-2 mt-2 text-sm font-medium rounded">
         <Icon icon="IconType.Plus" />
         <input @onkeyup="addTaskOnEnter" @bind="taskTitle"
           class="flex-grow h-8 ml-4 bg-transparent focus:outline-none font-medium" type="text"
           placeholder="add a new task" />
-      </button>
+      </div>
+      <div class="flex items-center w-full h-8 px-2 mt-2 text-sm font-medium rounded">
+        <button class="p-2" @onclick="() => add(5)">Add 5 random</button>
+        <button class="p-2" @onclick="() => add(1000)">Add 1000 random</button>
+        <button class="p-2" @onclick="clear">Clear all</button>
+      </div>
     </div>
     <!-- Component End  -->
   </div>
@@ -76,12 +71,27 @@
       Console.WriteLine("No todo items found in local storage");
       // Lets generate some random todo items and add them to the initial list
       var todoItems = await dummyDataService.GetRandomTodoItems(5);
-      await todoDataService.SaveTodoItems(todoItems);
       myTodoList.Items.AddRange(todoItems);
+
+      await todoDataService.SaveTodoItems(todoItems);
     }
 
   }
 
+  private async Task add(int count)
+  {
+    var todoItems = await dummyDataService.GetRandomTodoItems(count);
+    await todoDataService.SaveTodoItems(todoItems);
+    myTodoList.Items.AddRange(todoItems);
+
+    await todoDataService.SaveTodoItems(todoItems);
+  }
+
+  private async Task clear()
+  {
+    await todoDataService.ClearTodoItems();
+    myTodoList.Items.Clear();
+  }
 
   private async Task addTaskOnEnter(KeyboardEventArgs e)
   {
