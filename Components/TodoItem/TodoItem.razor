@@ -1,3 +1,6 @@
+@namespace BlazorApp.Components.TodoItem
+@using BlazorApp.Models;
+
 <div>
   <input class="hidden" @onchange="ToggleCompletion" checked="@(Metadata.IsDone ? "checked" : null)" type="checkbox"
     id="task_@Id">
@@ -14,7 +17,7 @@
   @{
     if (Metadata.CompletedAt != null)
     {
-      <span class="ml-4 text-xs text-gray-400">Created at @Metadata.CreatedAt.ToString("dd-mm-yyyy HH:mm:ss")</span>
+      <span class="ml-4 text-xs text-gray-400">Completed at @Metadata.CompletedAt?.ToString("dd-mm-yyyy HH:mm:ss")</span>
     }
   }
 </div>
@@ -27,10 +30,9 @@
   public string Title { get; set; } = "You got a job todo";
 
   [Parameter]
-  public TodoMetadata Metadata { get; set; } =
+  public TodoListItemMetadata Metadata { get; set; } =
   new()
     {
-      CompletedAt = DateTime.Now,
       CreatedAt = DateTime.Now,
       IsDone = false,
     };

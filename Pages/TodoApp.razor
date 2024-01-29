@@ -1,6 +1,11 @@
 ﻿@page "/home"
 @page "/"
+@using BlazorApp.Models;
+@using BlazorApp.Services;
 @using BlazorApp.Components.TodoItem;
+@using BlazorApp.Components.Icon;
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@inject BlazorApp.Services.IDummyDataService dummyDataService
 
 <PageTitle>TodoApp</PageTitle>
 <style>
@@ -29,11 +34,7 @@
     <!-- Component Start -->
     <div class="max-w-full p-8 bg-white rounded-lg shadow-lg w-96">
       <div class="flex items-center mb-6">
-        <svg class="h-8 w-8 text-indigo-500 stroke-current" xmlns="http://www.w3.org/2000/svg" fill="none"
-          viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
-        </svg>
+        <Icon icon="IconType.Envelope" />
         <h4 class="font-semibold ml-3 text-lg">@myTodoList.Title</h4>
       </div>
       @{
@@ -48,12 +49,11 @@
         }
       }
       <button class="flex items-center w-full h-8 px-2 mt-2 text-sm font-medium rounded">
-        <svg class="w-5 h-5 text-gray-400 fill-current" xmlns="http://www.w3.org/2000/svg" fill="none"
-          viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-        </svg>
-        <input class="flex-grow h-8 ml-4 bg-transparent focus:outline-none font-medium" type="text"
-          placeholder="add a new task">
+
+        <Icon icon="IconType.Plus" />
+        <input @onkeyup="addTaskOnEnter" @bind="taskTitle"
+          class="flex-grow h-8 ml-4 bg-transparent focus:outline-none font-medium" type="text"
+          placeholder="add a new task" />
       </button>
     </div>
     <!-- Component End  -->
@@ -61,35 +61,36 @@
 </div>
 
 @code {
-  private class TodoList
+  TodoList myTodoList = new TodoList { Title = "My Todo List", Items = new List<TodoListItem>() { } };
+  private string? name;
+  protected override async Task OnInitializedAsync()
   {
-    public string Title { get; set; } = string.Empty;
-    public List<TodoListItem> Items { get; set; } = new List<TodoListItem>();
+    //var todoItems = await dummyDataService.GetRandomTodoItems(10000);
+    var todoItems = await dummyDataService.GetRandomTodoItems(5);
+    myTodoList.Items.AddRange(todoItems);
+    await localStorage.SetItemAsync("name", "John Smith");
+    name = await localStorage.GetItemAsync<string>("name");
+    Console.WriteLine(name);
+
   }
 
-  private class TodoListItem
+  private void addTaskOnEnter(KeyboardEventArgs e)
   {
-    public string Title { get; set; } = string.Empty;
-    public TodoMetadata Metadata { get; set; } = new TodoMetadata();
-
-    public TodoListItem(string title, TodoMetadata metadata)
+    if ((e.Key == "Enter" || e.Key == "NumpadEnter") && !string.IsNullOrEmpty(taskTitle))
     {
-      Title = title;
-      Metadata = metadata;
+      myTodoList.Items.Add(new TodoListItem
+        {
+          Title = taskTitle,
+          Metadata = new TodoListItemMetadata
+          {
+            IsDone = false,
+            CreatedAt = DateTime.Now
+          }
+        });
+      taskTitle = null;
     }
   }
 
+  private string? taskTitle = "";
 
-  private TodoList myTodoList = new TodoList()
-    {
-      Title = "Patrick's Todolist",
-      Items = new List<TodoListItem>()
-{
-new TodoListItem("Buy milk", new TodoMetadata() { IsDone = false }),
-new TodoListItem("Buy water", new TodoMetadata() { IsDone = false }),
-new TodoListItem("Milk cow", new TodoMetadata() { IsDone = false }),
-new TodoListItem("Step on LEGO bricks", new TodoMetadata() { CompletedAt = DateTime.Now, IsDone = true }),
-new TodoListItem("Roll in dirt", new TodoMetadata() { IsDone = false }),
-}
-    };
 }
