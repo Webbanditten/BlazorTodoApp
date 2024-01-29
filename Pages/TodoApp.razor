@@ -6,7 +6,7 @@
 @using BlazorApp.Components.Icon;
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 @inject BlazorApp.Services.IDummyDataService dummyDataService
-
+@inject BlazorApp.Services.ITodoDataService todoDataService
 <PageTitle>TodoApp</PageTitle>
 <style>
   .rotate-45 {
@@ -41,9 +41,9 @@
         if (myTodoList.Items.Count > 0)
         {
           <div class="flex flex-col gap-2">
-            @for (int i = 0; i < myTodoList.Items.Count; i++)
+            @foreach (var item in myTodoList.Items)
             {
-              <TodoItem Id="@i" Title="@myTodoList.Items[i].Title" Metadata="@myTodoList.Items[i].Metadata" />
+              <TodoItem Id="@item.Id" Title="@item.Title" Metadata="@item.Metadata" />
             }
           </div>
         }
@@ -61,36 +61,45 @@
 </div>
 
 @code {
-  TodoList myTodoList = new TodoList { Title = "My Todo List", Items = new List<TodoListItem>() { } };
-  private string? name;
+  TodoList myTodoList = new TodoList { Title = "Patrick's todo", Items = new List<TodoListItem>() { } };
+  private string? taskTitle = "";
   protected override async Task OnInitializedAsync()
   {
-    //var todoItems = await dummyDataService.GetRandomTodoItems(10000);
-    var todoItems = await dummyDataService.GetRandomTodoItems(5);
-    myTodoList.Items.AddRange(todoItems);
-    await localStorage.SetItemAsync("name", "John Smith");
-    name = await localStorage.GetItemAsync<string>("name");
-    Console.WriteLine(name);
+    // Lets check if we already have a todo list in local storage
+    var todoListItems = await todoDataService.GetTodoItems();
+    if (todoListItems.Count() != 0)
+    {
+      myTodoList.Items.AddRange(todoListItems);
+    }
+    else
+    {
+      Console.WriteLine("No todo items found in local storage");
+      // Lets generate some random todo items and add them to the initial list
+      var todoItems = await dummyDataService.GetRandomTodoItems(5);
+      await todoDataService.SaveTodoItems(todoItems);
+      myTodoList.Items.AddRange(todoItems);
+    }
 
   }
 
-  private void addTaskOnEnter(KeyboardEventArgs e)
+
+  private async Task addTaskOnEnter(KeyboardEventArgs e)
   {
     if ((e.Key == "Enter" || e.Key == "NumpadEnter") && !string.IsNullOrEmpty(taskTitle))
     {
-      myTodoList.Items.Add(new TodoListItem
+      var newItem = new TodoListItem
         {
+          Id = Guid.NewGuid(),
           Title = taskTitle,
           Metadata = new TodoListItemMetadata
           {
             IsDone = false,
             CreatedAt = DateTime.Now
           }
-        });
+        };
+      myTodoList.Items.Add(newItem);
+      await todoDataService.AddTodoItem(newItem);
       taskTitle = null;
     }
   }
-
-  private string? taskTitle = "";
-
 }

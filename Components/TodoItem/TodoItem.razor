@@ -1,19 +1,26 @@
 @namespace BlazorApp.Components.TodoItem
+@using BlazorApp.Components.Icon
 @using BlazorApp.Models;
+@inject BlazorApp.Services.ITodoDataService todoDataService
 
-<div>
-  <input class="hidden" @onchange="ToggleCompletion" checked="@(Metadata.IsDone ? "checked" : null)" type="checkbox"
-    id="task_@Id">
-  <label class="flex items-center h-10 px-2 rounded cursor-pointer hover:bg-gray-100" for="task_@Id">
-    <span class="flex items-center justify-center w-5 h-5 text-transparent border-2 border-gray-300 rounded-full">
-      <svg class="w-4 h-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-        <path fill-rule="evenodd"
-          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-          clip-rule="evenodd" />
-      </svg>
-    </span>
-    <span class="ml-4 text-sm">@Id - @Title </span>
-  </label>
+<div class=" @(deleted ? "hidden" : null)">
+  <div class="flex items-center">
+    <input class="hidden" @onchange="ToggleCompletion" checked="@(Metadata.IsDone ? "checked" : null)" type="checkbox"
+      id="task_@Id">
+    <label class="w-full flex items-center h-10 px-2 rounded cursor-pointer hover:bg-gray-100" for="task_@Id">
+      <span class="flex items-center justify-center w-5 h-5 text-transparent border-2 border-gray-300 rounded-full">
+        <svg class="w-4 h-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd"
+            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+            clip-rule="evenodd" />
+        </svg>
+      </span>
+      <span class="ml-4 text-sm">@Title </span>
+    </label>
+    <button @onclick="Delete" class="flex w-10 items-center justify-center">
+      <Icon icon="IconType.Trash" />
+    </button>
+  </div>
   @{
     if (Metadata.CompletedAt != null)
     {
@@ -22,9 +29,10 @@
   }
 </div>
 @code {
+  private bool deleted = false;
 
   [Parameter]
-  public int Id { get; set; } = 0;
+  public Guid Id { get; set; } = Guid.NewGuid();
 
   [Parameter]
   public string Title { get; set; } = "You got a job todo";
@@ -37,21 +45,31 @@
       IsDone = false,
     };
 
-  private void ToggleCompletion()
+  private async Task Delete()
   {
-    Console.WriteLine("Toggling completion");
+    await todoDataService.DeleteTodoItem(Id);
+    deleted = true;
+  }
+  private async Task ToggleCompletion()
+  {
     var newIsDone = !Metadata.IsDone;
     Metadata.IsDone = newIsDone;
 
     if (Metadata.IsDone)
     {
-      Console.WriteLine("Setting completed at " + DateTime.Now.ToString("dd-mm-yyyy HH:mm:ss"));
       Metadata.CompletedAt = DateTime.Now;
     }
     else
     {
-      Console.WriteLine("Setting completed at to null");
       Metadata.CompletedAt = null;
     }
+
+    await todoDataService.UpdateTodoItem(new TodoListItem
+      {
+        Id = Id,
+        Title = Title,
+        Metadata = Metadata
+      });
+
   }
 }
