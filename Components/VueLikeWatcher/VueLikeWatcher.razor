@@ -1,0 +1,26 @@
+@namespace BlazorApp.Components.VueLikeWatcher
+
+<h2>Vue like watcher using setter and getters</h2>
+<input type="number" @bind-value="Counter" />
+
+@code {
+  private int _counter = 0;
+
+  private void CounterChanged()
+  {
+    Console.WriteLine($"Counter changed to {Counter}");
+  }
+
+  private int Counter
+  {
+    get => _counter;
+    set
+    {
+      if (_counter != value)
+      {
+        _counter = value;
+        CounterChanged();
+      }
+    }
+  }
+}

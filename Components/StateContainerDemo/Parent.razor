@@ -1,0 +1,35 @@
+@namespace BlazorApp.Components.StateContainerDemo.Parent
+@using BlazorApp.StateContainers
+@using BlazorApp.Components.StateContainerDemo.Child
+@implements IDisposable
+@inject DemoStateContainer StateContainer
+
+<h2>Parent component</h2>
+
+<p>Parent component Property: <b>@StateContainer.Property</b></p>
+
+<p>
+  <button @onclick="ChangePropertyValue">
+    Change the Property from the Parent component
+  </button>
+</p>
+
+<Child />
+
+@code {
+  protected override void OnInitialized()
+  {
+    StateContainer.OnChange += StateHasChanged;
+  }
+
+  private void ChangePropertyValue()
+  {
+    StateContainer.Property =
+    $"New value set in the Parent component: {DateTime.Now}";
+  }
+
+  public void Dispose()
+  {
+    StateContainer.OnChange -= StateHasChanged;
+  }
+}

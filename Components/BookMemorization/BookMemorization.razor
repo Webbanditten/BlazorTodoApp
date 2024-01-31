@@ -1,0 +1,47 @@
+@namespace BlazorApp.Components.BookMemorization
+
+<span>Author has published books? - @(couldFindAuthor ? "Yes" : "No") -
+  @lastTimeVariableChanged?.ToString("HH:mm:ss")</span>
+
+@code {
+  private class Book
+  {
+    public string Title { get; set; }
+    public string Author { get; set; }
+  }
+
+  List<Book> books = new List<Book> {
+new Book { Title = "Farming 101", Author = "Tim Cook" },
+new Book { Title = "How to transition from developer to farmer", Author = "Patrick" },
+
+};
+
+  bool couldFindAuthor = false;
+  DateTime? lastTimeVariableChanged;
+  [Parameter]
+  public string? Author { get; set; }
+
+  protected override void OnParametersSet()
+  {
+    if (Author != null)
+    {
+      foreach (var book in books)
+      {
+        if (book.Author.ToLower() == Author.ToLower())
+        {
+          couldFindAuthor = true;
+          lastTimeVariableChanged = DateTime.Now;
+          break;
+        }
+        else
+        {
+          if (couldFindAuthor != false)
+          {
+            lastTimeVariableChanged = DateTime.Now;
+            couldFindAuthor = false;
+          }
+        }
+      }
+    }
+  }
+}

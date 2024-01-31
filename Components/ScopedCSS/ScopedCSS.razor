@@ -1,0 +1,7 @@
+@namespace BlazorApp.Components.ScopedCSS
+
+<div class="i-am-scoped">@Text</div>
+@code {
+  [Parameter]
+  public string Text { get; set; } = "I am scoped";
+}

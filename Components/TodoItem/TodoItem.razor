@@ -31,13 +31,13 @@
 @code {
   private bool deleted = false;
 
-  [Parameter]
+  [Parameter, EditorRequired]
   public Guid Id { get; set; } = Guid.NewGuid();
 
-  [Parameter]
+  [Parameter, EditorRequired]
   public string Title { get; set; } = "You got a job todo";
 
-  [Parameter]
+  [Parameter, EditorRequired]
   public TodoListItemMetadata Metadata { get; set; } =
   new()
     {
