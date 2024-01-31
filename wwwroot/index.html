@@ -10,7 +10,8 @@
     var currentUrl = window.location.href;
     var localHostUrl = 'localhost';
     var netlifyUrl = 'netlify';
-    if (currentUrl.includes(localHostUrl) || currentUrl.includes(netlifyUrl)) {
+    var cloudflare = 'pages.dev';
+    if (currentUrl.includes(localHostUrl) || currentUrl.includes(netlifyUrl) || currentUrl.includes(cloudflare)) {
       base.href = '/';
     } else {
       base.href = '/BlazorTodoApp/';
