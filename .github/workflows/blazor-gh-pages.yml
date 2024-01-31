@@ -42,12 +42,28 @@ jobs:
     - name: Copy index.html to 404.html 
       run: cp ./publish/wwwroot/index.html ./publish/wwwroot/404.html
 
+
+    - name: Deploy to Netlify
+      uses: nwtgck/actions-netlify@v2.0
+      with:
+        publish-dir: './publish/wwwroot'
+        production-branch: master
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        deploy-message: "Deploy from GitHub Actions"
+        enable-pull-request-comment: false
+        enable-commit-comment: true
+        overwrites-pull-request-comment: true
+      env:
+        NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+      timeout-minutes: 1
+
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v2
       with:
         path: './publish/wwwroot'
-        
-  deploy:
+    
+  deploy-github-pages:
       environment:
         name: github-pages
         url: ${{ steps.deployment.outputs.page_url }}
