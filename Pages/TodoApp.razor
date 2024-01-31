@@ -30,7 +30,7 @@
       }
       <div class="flex items-center w-full h-8 px-2 mt-2 text-sm font-medium rounded">
         <Icon icon="IconType.Plus" />
-        <input @onkeyup="addTaskOnEnter" @bind="taskTitle"
+        <input id="title" name="title" @onkeyup="addTaskOnEnter" @bind="taskTitle"
           class="flex-grow h-8 ml-4 bg-transparent focus:outline-none font-medium" type="text"
           placeholder="add a new task" />
       </div>

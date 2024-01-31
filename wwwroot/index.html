@@ -5,6 +5,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BlazorApp</title>
+  <meta name="theme-color" content="##1b6ec2" />
+  <meta name="description" content="Another todo app" />
   <script>
     var base = document.createElement('base');
     var currentUrl = window.location.href;
@@ -22,6 +24,7 @@
   <link rel="stylesheet" href="css/app.css" />
   <link href="BlazorApp.styles.css" rel="stylesheet">
   <link rel="icon" type="image/png" href="favicon.png" />
+  <link href="manifest.webmanifest" rel="manifest" />
 </head>
 
 <body class=" bg-gray-200">
@@ -39,6 +42,7 @@
     <a class="dismiss">🗙</a>
   </div>
   <script src="_framework/blazor.webassembly.js"></script>
+  <script>navigator.serviceWorker.register('service-worker.js');</script>
 </body>
 
 </html>
