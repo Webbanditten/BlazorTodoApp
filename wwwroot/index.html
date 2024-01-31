@@ -9,7 +9,8 @@
     var base = document.createElement('base');
     var currentUrl = window.location.href;
     var localHostUrl = 'localhost';
-    if (currentUrl.includes(localHostUrl)) {
+    var netlifyUrl = 'netlify';
+    if (currentUrl.includes(localHostUrl) || currentUrl.includes(netlifyUrl)) {
       base.href = '/';
     } else {
       base.href = '/BlazorTodoApp/';
