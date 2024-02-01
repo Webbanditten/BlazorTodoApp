@@ -17,15 +17,21 @@
         <Icon icon="IconType.Envelope" />
         <h4 class="font-semibold ml-3 text-lg">@myTodoList.Title</h4>
       </div>
+
+      <div class="flex items-center w-full h-8 px-2 mt-2 text-sm font-medium rounded">
+        <button class="p-2" @onclick="() => add(5)">Add 5 random</button>
+        <button class="p-2" @onclick="() => add(1000)">Add 1000 random</button>
+        <button class="p-2" @onclick="clear">Clear all</button>
+      </div>
       @{
         if (myTodoList.Items.Count > 0)
         {
-              <div class="flex flex-col gap-2">
+          <div class="flex flex-col gap-2">
             @foreach (var item in myTodoList.Items)
             {
-                    <TodoItem Id="@item.Id" Title="@item.Title" Metadata="@item.Metadata" />
+              <TodoItem @key="@item.Id" Id="@item.Id" Title="@item.Title" Metadata="@item.Metadata" />
             }
-              </div>
+          </div>
         }
       }
       <div class="flex items-center w-full h-8 px-2 mt-2 text-sm font-medium rounded">
@@ -33,11 +39,6 @@
         <input id="title" name="title" @onkeyup="addTaskOnEnter" @bind="taskTitle"
           class="flex-grow h-8 ml-4 bg-transparent focus:outline-none font-medium" type="text"
           placeholder="add a new task" />
-      </div>
-      <div class="flex items-center w-full h-8 px-2 mt-2 text-sm font-medium rounded">
-        <button class="p-2" @onclick="() => add(5)">Add 5 random</button>
-        <button class="p-2" @onclick="() => add(1000)">Add 1000 random</button>
-        <button class="p-2" @onclick="clear">Clear all</button>
       </div>
     </div>
     <!-- Component End  -->
@@ -59,7 +60,7 @@
     {
       Console.WriteLine("No todo items found in local storage");
       // Lets generate some random todo items and add them to the initial list
-      var todoItems = await dummyDataService.GetRandomTodoItems(5);
+      var todoItems = dummyDataService.GetRandomTodoItems(5);
       myTodoList.Items.AddRange(todoItems);
 
       await todoDataService.SaveTodoItems(todoItems);
@@ -69,11 +70,10 @@
 
   private async Task add(int count)
   {
-    var todoItems = await dummyDataService.GetRandomTodoItems(count);
-    await todoDataService.SaveTodoItems(todoItems);
+    var todoItems = dummyDataService.GetRandomTodoItems(count);
     myTodoList.Items.AddRange(todoItems);
 
-    await todoDataService.SaveTodoItems(todoItems);
+    await todoDataService.SaveTodoItems(myTodoList.Items);
   }
 
   private async Task clear()
