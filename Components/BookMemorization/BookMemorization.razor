@@ -27,7 +27,7 @@ new Book { Title = "How to transition from developer to farmer", Author = "Patri
     {
       foreach (var book in books)
       {
-        if (book.Author.ToLower() == Author.ToLower())
+        if (book.Author?.ToLower() == Author.ToLower())
         {
           couldFindAuthor = true;
           lastTimeVariableChanged = DateTime.Now;
